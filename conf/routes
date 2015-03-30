@@ -33,3 +33,10 @@ GET     /show         controllers.TemplateController.show()
 
 GET     /user/entry       controllers.UserController.entryInit
 POST    /user/entry       controllers.UserController.entrySubmit
+
+#
+GET     /event/create/           controllers.event.EventCreate.index
+GET     /event/generate/         controllers.event.EventCreate.generate
+POST    /event/create/create     controllers.event.EventCreate.create
+GET     /event/                  controllers.event.EventSearch.index
+POST    /event/search/           controllers.event.EventSearch.search
