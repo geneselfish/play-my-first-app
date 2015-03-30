@@ -4,6 +4,7 @@ import play.api.mvc.Controller
 import play.api.mvc.Action
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import scala.slick.codegen.SourceCodeGenerator
 import models.Tables.EventRow
 import models.EventForm
@@ -13,8 +14,8 @@ object EventCreate extends Controller {
   /** イベントフォーム */
   val eventForm = Form(
     mapping(
-      "eventId" -> text,
-      "eventNm" -> text
+      "eventId" -> nonEmptyText,
+      "eventNm" -> nonEmptyText.verifying(maxLength(5))
       )
       (EventForm.apply)(EventForm.unapply)
   )
@@ -26,11 +27,18 @@ object EventCreate extends Controller {
 
   /** 登録 */
   def create = Action { implicit request =>
-    val form = eventForm.bindFromRequest.get
-    val event = EventRow(0, form.eventId, form.eventNm)
-    Events.create(event)
-
-    Ok(views.html.event.eventCreate(eventForm))
+    this.eventForm.bindFromRequest.fold(
+        errors => Ok(views.html.event.eventCreate(errors)),
+        success => {
+          val event = EventRow(0, success.eventId, success.eventNm)
+          Events.create(event)
+          Redirect(controllers.event.routes.EventCreate.index)
+        }
+    )
+//    val form = eventForm.bindFromRequest.get
+//    val event = EventRow(0, form.eventId, form.eventNm)
+//    Events.create(event)
+//    Ok(views.html.event.eventCreate(eventForm))
   }
 
 

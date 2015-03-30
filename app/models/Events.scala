@@ -15,6 +15,7 @@ object Events {
 
   /** 登録 */
   def create(e: EventRow) = database.withTransaction { implicit session: Session =>
+    Logger.debug(Event.insertStatement)
     Event.insert(e)
   }
 
@@ -29,6 +30,27 @@ object Events {
 
     return q.list
   }
+
+  /** ID検索 */
+  def findById(id: Int): EventRow =
+    database.withTransaction { implicit session: Session =>
+    Event.filter(_.id === id).first
+  }
+
+  /** 更新 */
+  def update(e: EventRow) = database.withTransaction { implicit session: Session =>
+    val q = Event.filter(_.id === e.id)
+    Logger.debug(q.updateStatement)
+    q.update(e)
+  }
+
+  /** 削除 */
+  def delete(id: Int) = database.withTransaction { implicit session: Session =>
+    val q = Event.filter(_.id === id)
+    Logger.debug(q.deleteStatement)
+    q.delete
+  }
+
 
   /** Modelの取得 */
   def model = database.withSession { implicit session =>
