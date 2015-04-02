@@ -6,6 +6,7 @@ import play.Logger
 import scala.slick.driver.H2Driver.simple._
 import scala.slick.jdbc.meta.{ MTable, createModel }
 import scala.slick.driver.JdbcDriver
+import java.sql.Date
 import models.Tables.{ Event, EventRow }
 
 object Events {
@@ -20,11 +21,13 @@ object Events {
   }
 
   /** 検索 */
-  def find(eventId: String, eventNm: String): List[EventRow] =
+  def find(eventId: String, eventNm: String, eventDateFrom: Option[Date], eventDateTo: Option[Date]): List[EventRow] =
     database.withTransaction { implicit session: Session =>
 
     var q = if (eventId.isEmpty) Event else Event.filter(_.eventId === eventId)
     q = if (eventNm.isEmpty) q else q.filter(_.eventNm like s"%$eventNm%")
+    q = if (eventDateFrom.isEmpty) q else q.filter(_.eventDate >= eventDateFrom.get)
+    q = if (eventDateTo.isEmpty) q else q.filter(_.eventDate <= eventDateTo.get)
     q = q.sortBy(_.eventNm)
     Logger.debug(q.selectStatement)
 

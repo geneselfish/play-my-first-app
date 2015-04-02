@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
 //  anorm,
   "com.typesafe.slick" %% "slick" % "2.1.0",
   "com.typesafe.slick" %% "slick-codegen" % "2.1.0",
+  "commons-validator" % "commons-validator" % "1.4.0",
   cache,
   ws
 )

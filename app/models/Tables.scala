@@ -19,18 +19,20 @@ trait Tables {
   /** Entity class storing rows of table Event
    *  @param id Database column ID DBType(INTEGER), AutoInc, PrimaryKey
    *  @param eventId Database column EVENT_ID DBType(VARCHAR), Length(100,true)
-   *  @param eventNm Database column EVENT_NM DBType(VARCHAR), Length(100,true) */
-  case class EventRow(id: Int, eventId: String, eventNm: String)
+   *  @param eventNm Database column EVENT_NM DBType(VARCHAR), Length(100,true)
+   *  @param eventDate Database column EVENT_DATE DBType(DATE)
+   *  @param homepage Database column HOMEPAGE DBType(VARCHAR), Length(256,true) */
+  case class EventRow(id: Int, eventId: String, eventNm: String, eventDate: Option[java.sql.Date], homepage: Option[String])
   /** GetResult implicit for fetching EventRow objects using plain SQL queries */
-  implicit def GetResultEventRow(implicit e0: GR[Int], e1: GR[String]): GR[EventRow] = GR{
+  implicit def GetResultEventRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[java.sql.Date]], e3: GR[Option[String]]): GR[EventRow] = GR{
     prs => import prs._
-    EventRow.tupled((<<[Int], <<[String], <<[String]))
+    EventRow.tupled((<<[Int], <<[String], <<[String], <<?[java.sql.Date], <<?[String]))
   }
   /** Table description of table EVENT. Objects of this class serve as prototypes for rows in queries. */
   class Event(_tableTag: Tag) extends Table[EventRow](_tableTag, Some("TECHAPP"), "EVENT") {
-    def * = (id, eventId, eventNm) <> (EventRow.tupled, EventRow.unapply)
+    def * = (id, eventId, eventNm, eventDate, homepage) <> (EventRow.tupled, EventRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, eventId.?, eventNm.?).shaped.<>({r=>import r._; _1.map(_=> EventRow.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, eventId.?, eventNm.?, eventDate, homepage).shaped.<>({r=>import r._; _1.map(_=> EventRow.tupled((_1.get, _2.get, _3.get, _4, _5)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column ID DBType(INTEGER), AutoInc, PrimaryKey */
     val id: Column[Int] = column[Int]("ID", O.AutoInc, O.PrimaryKey)
@@ -38,6 +40,10 @@ trait Tables {
     val eventId: Column[String] = column[String]("EVENT_ID", O.Length(100,varying=true))
     /** Database column EVENT_NM DBType(VARCHAR), Length(100,true) */
     val eventNm: Column[String] = column[String]("EVENT_NM", O.Length(100,varying=true))
+    /** Database column EVENT_DATE DBType(DATE) */
+    val eventDate: Column[Option[java.sql.Date]] = column[Option[java.sql.Date]]("EVENT_DATE")
+    /** Database column HOMEPAGE DBType(VARCHAR), Length(256,true) */
+    val homepage: Column[Option[String]] = column[Option[String]]("HOMEPAGE", O.Length(256,varying=true))
   }
   /** Collection-like TableQuery object for table Event */
   lazy val Event = new TableQuery(tag => new Event(tag))

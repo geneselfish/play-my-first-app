@@ -4,19 +4,22 @@ import play.api.mvc.Controller
 import play.api.mvc.Action
 import play.api.data.Form
 import play.api.data.Forms._
-//import play.api.data.validation.Constraints._
-import xenlon.api.data.validation.XenlonConstraints._
 import scala.slick.codegen.SourceCodeGenerator
 import models.Tables.EventRow
 import models.EventForm
 import models.Events
+//import play.api.data.validation.Constraints._
+import xenlon.api.data.validation.XenlonConstraints._
+import xenlon.api.data.XenlonForms._
 
 object EventCreate extends Controller {
   /** イベントフォーム */
   val eventForm = Form(
     mapping(
       "eventId" -> nonEmptyText.verifying(fixLength(5)),
-      "eventNm" -> nonEmptyText.verifying(maxLength(5))
+      "eventNm" -> nonEmptyText.verifying(maxLength(5)),
+      "eventDate" -> optional(sqlDate),
+      "homepage" -> optional(url)//text.verifying(isUrl)
       )
       (EventForm.apply)(EventForm.unapply)
   )
@@ -31,7 +34,7 @@ object EventCreate extends Controller {
     this.eventForm.bindFromRequest.fold(
         errors => Ok(views.html.event.eventCreate(errors)),
         success => {
-          val event = EventRow(0, success.eventId, success.eventNm)
+          val event = EventRow(0, success.eventId, success.eventNm, success.eventDate, success.homepage)
           Events.create(event)
           Redirect(controllers.event.routes.EventCreate.index)
         }
