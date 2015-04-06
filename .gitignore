@@ -1,5 +1,5 @@
 .cache
-data
+/data
 logs
 project/project
 project/target
@@ -14,7 +14,7 @@ dist
 /.classpath
 /RUNNING_PID
 /bin
-.settings/org.scala-ide.sdt.core.prefs
+/.settings/org.scala-ide.sdt.core.prefs
 
 # Scala-IDE specific
 .scala_dependencies
