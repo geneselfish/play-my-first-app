@@ -21,7 +21,7 @@ object EventUpdate extends Controller {
       (EventForm.apply)(EventForm.unapply))
 
   /** 初期表示 */
-  def index(id: Int) = Action {
+  def index(id: Int) = Action { implicit request =>
     val event = Events.findById(id)
     val form = EventForm(event.eventId, event.eventNm, event.eventDate, event.homepage)
 
@@ -35,7 +35,7 @@ object EventUpdate extends Controller {
         success => {
           val event = EventRow(id, success.eventId, success.eventNm, success.eventDate, success.homepage)
           Events.update(event)
-          Redirect(controllers.event.routes.EventUpdate.index(id))
+          Redirect(controllers.event.routes.EventUpdate.index(id)).flashing("success" -> "変更しました。")
         }
     )
 //    val form = eventForm.bindFromRequest.get

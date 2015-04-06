@@ -25,7 +25,7 @@ object EventCreate extends Controller {
   )
 
   /** 初期表示 */
-  def index = Action {
+  def index = Action { implicit request =>
     Ok(views.html.event.eventCreate(eventForm))
   }
 
@@ -36,7 +36,7 @@ object EventCreate extends Controller {
         success => {
           val event = EventRow(0, success.eventId, success.eventNm, success.eventDate, success.homepage)
           Events.create(event)
-          Redirect(controllers.event.routes.EventCreate.index)
+          Redirect(controllers.event.routes.EventCreate.index).flashing("success" -> "登録しました。")
         }
     )
 //    val form = eventForm.bindFromRequest.get
@@ -47,7 +47,7 @@ object EventCreate extends Controller {
 
 
   /** コード生成 */
-  def generate = Action {
+  def generate = Action { implicit request =>
     val slickDriver = "scala.slick.driver.H2Driver"
     val outputFolder = "app"
     val pkg = "models"

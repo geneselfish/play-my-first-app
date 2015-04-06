@@ -18,7 +18,7 @@ object EventSearch extends Controller {
       )(EventSearchForm.apply)(EventSearchForm.unapply))
 
   /** 初期表示 */
-  def index = Action {
+  def index = Action { implicit request =>
     Ok(views.html.event.eventSearch(eventForm, null))
   }
 
@@ -47,6 +47,7 @@ object EventSearch extends Controller {
   /** 削除 */
   def delete(id: Int) = Action { implicit request =>
     Events.delete(id)
-    Ok(views.html.event.eventSearch(eventForm, null))
+//    Ok(views.html.event.eventSearch(eventForm, null)).flashing("success" -> "削除しました。")
+    Redirect(controllers.event.routes.EventSearch.index).flashing("success" -> "削除しました。")
   }
 }
