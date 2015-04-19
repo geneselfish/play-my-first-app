@@ -4,7 +4,7 @@ create table User (
   name varchar(100),
   email varchar(100),
   password varchar(100),
-  createDate timestamp default current_timestamp(),
+  createDate timestamp default CURRENT_TIMESTAMP,
 primary key(id));
 # --- !Downs
 drop table User;

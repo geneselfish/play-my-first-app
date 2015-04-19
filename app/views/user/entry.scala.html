@@ -1,6 +1,7 @@
 @* entry Template File *@
-@(userForm: Form[User])
+@(result: String, userForm: Form[(String, String, String)])
 @import helper._
+
 @main("entry user") {
 	<h1>Entry user</h1>
 	@helper.form(action = routes.UserController.entrySubmit) {
@@ -8,6 +9,7 @@
 		  <legend>input user info.</legend>
 		  @helper.inputText(userForm("name"))
 		  @helper.inputText(userForm("email"))
+		  @helper.inputText(userForm("password"))
 		</fieldset>
 		<input type="submit" value="entry">
 	}

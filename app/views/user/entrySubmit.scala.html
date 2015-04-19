@@ -1,6 +1,10 @@
 @* entrySubmit Template File *@
-@(user:User)
+@import models.Tables.UserRow
+@(user: UserRow)
 @main("entry user submit") {
     <h1>Entry Success!</h1>
-    <h2>Welcome! @user.name</h2>
+    id:@user.id</br>
+    name:@user.name.get</br>
+    email:@user.email.get</br>
+    creat date:@user.createdate.getOrElse("")</br>
 }
