@@ -1,5 +1,6 @@
 package services
 
+import play.Logger
 import play.api.db.DB
 import play.api.Play.current
 import scala.slick.driver.H2Driver.simple._
@@ -22,7 +23,7 @@ object UserService {
   }
 
   def entry(u: UserRow) = database.withTransaction { implicit session: Session =>
-    //Logger.debug(Event.insertStatement)
+    Logger.debug(User.insertStatement)
     User.insert(u)
   }
 }

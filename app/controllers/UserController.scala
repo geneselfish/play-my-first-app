@@ -35,7 +35,7 @@ object UserController extends Controller {
         success => {
           println("entry success!")
           val (name, email, password) = success
-          val id = UserService.entry(name, email, password)
+          val id = UserService.entry(name, email, password)//TODO 戻り値は何？
           UserService.findByPk(id) match {
             case Some(u) => Ok(views.html.user.entrySubmit(u))
             case None => Redirect(controllers.routes.UserController.entryInit)//"/user/entry"
